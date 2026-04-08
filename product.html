@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — Lumière</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- TEALIUM TAG WILL GO HERE (Step 3) -->
+
+  <nav>
+    <div class="nav-logo">LUMIÈRE</div>
+    <div class="nav-links">
+      <a href="index.html">← Back to Shop</a>
+      <a href="cart.html" class="cart-icon">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </div>
+  </nav>
+
+  <div class="product-detail" id="product-detail"></div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const products = [
+      { id: 1, name: "Ceramic Pour-Over Set", category: "Kitchen", price: 64, emoji: "☕", desc: "Hand-thrown stoneware with a precision filter. Makes a perfect cup every time. Dishwasher safe, naturally non-porous glaze." },
+      { id: 2, name: "Linen Throw Blanket", category: "Home", price: 89, emoji: "🛋️", desc: "Pre-washed Belgian linen in a generous 130×180cm. Gets softer with every wash, lasts decades." },
+      { id: 3, name: "Leather Journal", category: "Stationery", price: 48, emoji: "📓", desc: "Full-grain leather cover aged naturally over time. 200 pages of 100gsm cream-coloured laid paper, lay-flat binding." },
+      { id: 4, name: "Beeswax Candle Trio", category: "Wellness", price: 36, emoji: "🕯️", desc: "Pure beeswax with cotton wicks. Burns clean for up to 40 hours each. Set of three with subtle honey scent." },
+      { id: 5, name: "Bamboo Desk Organiser", category: "Office", price: 52, emoji: "🗂️", desc: "Sustainably sourced bamboo with a natural finish. Five compartments in varying sizes, non-slip base." },
+      { id: 6, name: "Glass Water Carafe", category: "Kitchen", price: 42, emoji: "🫙", desc: "Borosilicate glass, 1.2L capacity. Heat and cold resistant. Keeps water cool and crisp without any plastic taste." },
+    ];
+
+    function getCart() { return JSON.parse(localStorage.getItem('lumiere_cart') || '[]'); }
+    function saveCart(cart) {
+      localStorage.setItem('lumiere_cart', JSON.stringify(cart));
+      document.getElementById('cart-count').textContent = cart.reduce((s, i) => s + i.qty, 0);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function addToCart(product) {
+      const cart = getCart();
+      const existing = cart.find(i => i.id === product.id);
+      if (existing) existing.qty++;
+      else cart.push({ ...product, qty: 1 });
+      saveCart(cart);
+      showToast(`${product.name} added to cart`);
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id'));
+    const p = products.find(x => x.id === id);
+
+    if (p) {
+      document.title = `${p.name} — Lumière`;
+      document.getElementById('product-detail').innerHTML = `
+        <div class="detail-image">${p.emoji}</div>
+        <div class="detail-info">
+          <div class="detail-category">${p.category}</div>
+          <div class="detail-name">${p.name}</div>
+          <div class="detail-price">£${p.price}</div>
+          <p class="detail-desc">${p.desc}</p>
+          <hr style="border:none;border-top:1px solid var(--border)"/>
+          <button class="btn btn-large" onclick="addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')})">Add to Cart — £${p.price}</button>
+          <a href="cart.html"><button class="btn btn-large btn-outline" style="margin-top:8px">View Cart</button></a>
+        </div>
+      `;
+    } else {
+      document.getElementById('product-detail').innerHTML = `<p style="color:var(--text-muted)">Product not found. <a href="index.html" style="color:var(--accent)">Go back to shop</a></p>`;
+    }
+
+    saveCart(getCart());
+  </script>
+</body>
+</html>

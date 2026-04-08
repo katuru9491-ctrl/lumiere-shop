@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumière — Premium Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- TEALIUM TAG WILL GO HERE (Step 3) -->
+
+  <nav>
+    <div class="nav-logo">LUMIÈRE</div>
+    <div class="nav-links">
+      <a href="index.html">Shop</a>
+      <a href="cart.html" class="cart-icon">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Curated <span>Essentials</span><br>for Modern Living</h1>
+    <p>Thoughtfully selected products crafted for quality and longevity.</p>
+  </section>
+
+  <div class="section-label">All Products</div>
+
+  <div class="product-grid" id="product-grid"></div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const products = [
+      { id: 1, name: "Ceramic Pour-Over Set", category: "Kitchen", price: 64, emoji: "☕", desc: "Hand-thrown stoneware with a precision filter. Makes a perfect cup every time." },
+      { id: 2, name: "Linen Throw Blanket", category: "Home", price: 89, emoji: "🛋️", desc: "Pre-washed Belgian linen. Gets softer with every wash." },
+      { id: 3, name: "Leather Journal", category: "Stationery", price: 48, emoji: "📓", desc: "Full-grain leather cover, 200 pages of cream-coloured laid paper." },
+      { id: 4, name: "Beeswax Candle Trio", category: "Wellness", price: 36, emoji: "🕯️", desc: "Pure beeswax with cotton wicks. Burns clean for up to 40 hours each." },
+      { id: 5, name: "Bamboo Desk Organiser", category: "Office", price: 52, emoji: "🗂️", desc: "Sustainably sourced bamboo with a natural finish. Five compartments." },
+      { id: 6, name: "Glass Water Carafe", category: "Kitchen", price: 42, emoji: "🫙", desc: "Borosilicate glass, 1.2L. Keeps water cool and crisp." },
+    ];
+
+    function getCart() {
+      return JSON.parse(localStorage.getItem('lumiere_cart') || '[]');
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem('lumiere_cart', JSON.stringify(cart));
+      document.getElementById('cart-count').textContent = cart.reduce((s, i) => s + i.qty, 0);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function addToCart(product) {
+      const cart = getCart();
+      const existing = cart.find(i => i.id === product.id);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      saveCart(cart);
+      showToast(`${product.name} added to cart`);
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = products.map(p => `
+        <div class="product-card" onclick="window.location='product.html?id=${p.id}'">
+          <div class="product-image">${p.emoji}</div>
+          <div class="product-category">${p.category}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-desc">${p.desc}</div>
+          <div class="product-footer">
+            <div class="product-price">£${p.price}</div>
+            <button class="btn" onclick="event.stopPropagation(); addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')})">Add to Cart</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Init
+    saveCart(getCart());
+    renderProducts();
+  </script>
+</body>
+</html>
