@@ -10,8 +10,8 @@
 
   <!-- TEALIUM TAG WILL GO HERE (Step 3) -->
 <script type="text/javascript">
-  var params = new URLSearchParams(window.location.search);
-  var productId = parseInt(params.get('id'));
+  var product_params = new URLSearchParams(window.location.search);
+  var productId = parseInt(product_params.get('id'));
 
   var catalogue = [
     { id: 1, name: "Ceramic Pour-Over Set",  category: "Kitchen",    price: "64" },
