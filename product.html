@@ -9,32 +9,30 @@
 <body>
 
   <!-- TEALIUM TAG WILL GO HERE (Step 3) -->
- <script type="text/javascript">
-  // Product data — add new products here as the catalogue grows
-  var products = [
-    { id: 1, name: "Ceramic Pour-Over Set",    category: "Kitchen",     price: "64" },
-    { id: 2, name: "Linen Throw Blanket",       category: "Home",        price: "89" },
-    { id: 3, name: "Leather Journal",           category: "Stationery",  price: "48" },
-    { id: 4, name: "Beeswax Candle Trio",       category: "Wellness",    price: "36" },
-    { id: 5, name: "Bamboo Desk Organiser",     category: "Office",      price: "52" },
-    { id: 6, name: "Glass Water Carafe",        category: "Kitchen",     price: "42" },
+<script type="text/javascript">
+  var params = new URLSearchParams(window.location.search);
+  var productId = parseInt(params.get('id'));
+
+  var catalogue = [
+    { id: 1, name: "Ceramic Pour-Over Set",  category: "Kitchen",    price: "64" },
+    { id: 2, name: "Linen Throw Blanket",    category: "Home",       price: "89" },
+    { id: 3, name: "Leather Journal",        category: "Stationery", price: "48" },
+    { id: 4, name: "Beeswax Candle Trio",    category: "Wellness",   price: "36" },
+    { id: 5, name: "Bamboo Desk Organiser",  category: "Office",     price: "52" },
+    { id: 6, name: "Glass Water Carafe",     category: "Kitchen",    price: "42" },
   ];
 
-  // Read product ID from URL e.g. product.html?id=3
-  var params  = new URLSearchParams(window.location.search);
-  var id      = parseInt(params.get('id'));
-  var product = products.find(function(p){ return p.id === id; });
+  var currentProduct = catalogue.find(function(p){ return p.id === productId; });
 
-  // Populate utag_data dynamically
-  var utag_data = product ? {
+  var utag_data = currentProduct ? {
     page_type        : "product",
-    product_id       : String(product.id),
-    product_name     : product.name,
-    product_category : product.category,
-    product_price    : product.price
+    product_id       : String(currentProduct.id),
+    product_name     : currentProduct.name,
+    product_category : currentProduct.category,
+    product_price    : currentProduct.price
   } : {
-    page_type : "product",
-    product_id: "unknown"
+    page_type  : "product",
+    product_id : "unknown"
   };
 </script>
 <!-- Loading script asynchronously -->
